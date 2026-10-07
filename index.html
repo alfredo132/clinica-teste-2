@@ -205,7 +205,7 @@
     { name: "Limpeza e check-up", meta: "cerca de 1 hora", img: "1578933301026-3e5e901126dc" },
   ];
   $("#treats").innerHTML = TREATMENTS.map((t, i) => `
-    <li><a class="row" data-photo="${i + 1}" data-wa="Olá! Vim pelo site e quero marcar uma avaliação de ${t.name.toLowerCase()}." href="#">
+    <li><a class="row" data-photo="${i + 1}" data-treat="${t.name}" href="#">
       <span class="name">${t.name}</span><span class="meta">${t.meta}</span><i class="ph-bold ph-arrow-right go"></i>
     </a></li>`).join("");
 
@@ -274,5 +274,6 @@
   $("#status").textContent = isOpen ? "Aberto agora" : "Fechado agora";
   $("#status").classList.toggle("closed", !isOpen);
 </script>
+<script src="tratamentos.js"></script>
 </body>
 </html>
