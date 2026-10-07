@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clínica Vieira | Dentista na Savassi</title>
+<meta name="description" content="Clínica odontológica de família na Savassi, em Belo Horizonte. Marque sua avaliação pelo WhatsApp.">
+<meta name="theme-color" content="#f5f5f3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/capa.webp">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+  /* Site de uma tela: no computador nada rola, a não ser o conteúdo da aba quando passa da altura. */
+  :root {
+    --bg: #f5f5f3;
+    --paper: #ffffff;
+    --ink: #16181d;
+    --ink-2: #3b3f47;
+    --muted: #6b7079;
+    --line: #e2e2de;
+    --accent: #2443d0;
+    --accent-soft: #e8ecfb;
+    --font: "Archivo", system-ui, sans-serif;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    color-scheme: light;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  img { display: block; max-width: 100%; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  h1, h2, h3 { font-stretch: 112%; font-weight: 800; letter-spacing: -.035em; line-height: 1; }
+
+  .app { min-height: 100dvh; display: grid; grid-template-columns: 1fr 1fr; }
+
+  /* ---------- Foto ---------- */
+  .photo { position: relative; overflow: hidden; background: #fff; }
+  .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 80% 30%;
+    filter: saturate(.86) contrast(.93) brightness(.985) sepia(.07); }
+  .photo::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .14; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* ---------- Painel ---------- */
+  .panel { height: 100dvh; display: flex; flex-direction: column; padding: 32px 48px 28px; gap: 22px; }
+  .brand { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .brand b { display: block; font-stretch: 112%; font-weight: 800; font-size: 22px; letter-spacing: -.03em; line-height: 1; }
+  .brand span { font-size: 13px; color: var(--muted); }
+  .open { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink-2); padding: 6px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); white-space: nowrap; }
+  .open::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: #1f9d55; }
+  .open.closed::before { background: #b42318; }
+
+  .intro h1 { font-size: clamp(34px, 3.4vw, 52px); max-width: 14ch; }
+  .rating { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 14px; color: var(--ink-2); }
+  .rating b { font-size: 18px; color: var(--ink); }
+  .rating .stars { color: #f4b400; letter-spacing: 1px; }
+
+  .actions { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 8px; }
+  .act { height: 56px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 14px; font-weight: 600; font-size: 15px; background: var(--paper); border: 1px solid var(--line); transition: transform .15s var(--ease), border-color .2s, background-color .2s; white-space: nowrap; }
+  .act i { font-size: 20px; }
+  .act:hover { border-color: var(--ink); }
+  .act:active { transform: scale(.97); }
+  .act.main { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .act.main:hover { background: #1b36b3; }
+
+  /* ---------- Abas ---------- */
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); padding: 4px; gap: 4px; border-radius: 14px; background: #ebebe7; }
+  .tab { height: 40px; border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--ink-2); transition: background-color .2s, color .2s; }
+  .tab[aria-selected="true"] { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgb(0 0 0 / .08); }
+  .views { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -8px; padding: 0 8px; }
+  .view[hidden] { display: none; }
+  .view { animation: show .35s var(--ease); }
+  @keyframes show { from { opacity: 0; transform: translateY(6px); } }
+
+  /* Tratamentos */
+  .treats { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .treat { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 14px; background: var(--paper); border: 1px solid var(--line); text-align: left; transition: border-color .2s; }
+  .treat:hover { border-color: var(--ink); }
+  .treat img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; flex: none; background: var(--line); }
+  .treat b { display: block; font-size: 15px; font-weight: 700; line-height: 1.25; }
+  .treat span { font-size: 13px; color: var(--muted); }
+  .treat i { margin-left: auto; color: var(--accent); font-size: 18px; }
+  .hint { margin-top: 12px; font-size: 13px; color: var(--muted); }
+
+  /* Equipe */
+  .team { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .doc { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 14px; background: var(--paper); border: 1px solid var(--line); }
+  .doc img { width: 56px; height: 56px; border-radius: 999px; object-fit: cover; flex: none; background: var(--line); }
+  .doc b { display: block; font-size: 15px; font-weight: 700; line-height: 1.25; }
+  .doc span { font-size: 13px; color: var(--muted); }
+
+  /* Convênios */
+  .plans { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+  .plans li { padding: 12px 16px; border-radius: 12px; background: var(--paper); border: 1px solid var(--line); font-weight: 600; font-size: 15px; }
+  .link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-weight: 600; font-size: 14px; color: var(--accent); }
+
+  /* Endereço */
+  .info { display: grid; gap: 8px; }
+  .info div { display: flex; gap: 12px; padding: 14px; border-radius: 14px; background: var(--paper); border: 1px solid var(--line); }
+  .info i { font-size: 22px; color: var(--accent); flex: none; }
+  .info b { display: block; font-size: 15px; font-weight: 700; }
+  .info span { font-size: 14px; color: var(--muted); }
+
+  .foot { font-size: 12px; color: var(--muted); }
+
+  /* ---------- Celular ---------- */
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .photo { height: 42vh; min-height: 260px; }
+    .photo img { object-position: 82% 28%; }
+    .photo::before { content: ""; position: absolute; inset: auto 0 0; height: 40%; z-index: 1; background: linear-gradient(180deg, rgb(245 245 243 / 0), var(--bg)); }
+    .panel { height: auto; padding: 0 16px calc(24px + env(safe-area-inset-bottom)); margin-top: -28px; position: relative; z-index: 2; gap: 18px; }
+    .views { overflow: visible; margin: 0; padding: 0; }
+    .intro h1 { font-size: 34px; }
+    .actions { grid-template-columns: 1fr 1fr; }
+    .act.main { grid-column: 1 / -1; height: 58px; font-size: 16px; }
+    .treats, .team { grid-template-columns: 1fr; }
+    .tab { font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .view { animation: none; } }
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="photo"><img src="images/capa.webp" alt="Mulher loira de olhos azuis sorrindo, com dentes brancos" fetchpriority="high"></div>
+
+  <section class="panel">
+    <header class="brand">
+      <div><b>Clínica Vieira</b><span>Odontologia na Savassi</span></div>
+      <span class="open" id="open"></span>
+    </header>
+
+    <div class="intro">
+      <h1>Seu dentista de família em BH.</h1>
+      <p class="rating"><b>4,9</b><span class="stars" aria-hidden="true">★★★★★</span><span>712 avaliações no Google</span></p>
+    </div>
+
+    <nav class="actions" aria-label="Contato">
+      <a class="act main" data-wa="Olá! Vim pelo site e quero marcar uma avaliação." href="#"><i class="ph-bold ph-whatsapp-logo"></i>Marcar pelo WhatsApp</a>
+      <a class="act" href="tel:+553130000000"><i class="ph ph-phone"></i>Ligar</a>
+      <a class="act" href="https://maps.google.com/?q=Rua+Fernandes+Tourinho+470+Savassi+Belo+Horizonte" target="_blank" rel="noopener"><i class="ph ph-map-pin"></i>Mapa</a>
+    </nav>
+
+    <div class="tabs" role="tablist" aria-label="Informações da clínica">
+      <button class="tab" role="tab" id="t-trat" aria-controls="v-trat" aria-selected="true">Tratamentos</button>
+      <button class="tab" role="tab" id="t-equipe" aria-controls="v-equipe" aria-selected="false">Equipe</button>
+      <button class="tab" role="tab" id="t-conv" aria-controls="v-conv" aria-selected="false">Convênios</button>
+      <button class="tab" role="tab" id="t-end" aria-controls="v-end" aria-selected="false">Endereço</button>
+    </div>
+
+    <div class="views">
+      <div class="view" role="tabpanel" id="v-trat" aria-labelledby="t-trat">
+        <ul class="treats" id="treats"></ul>
+        <p class="hint">Toque no tratamento e a mensagem já sai pronta no WhatsApp.</p>
+      </div>
+      <div class="view" role="tabpanel" id="v-equipe" aria-labelledby="t-equipe" hidden>
+        <ul class="team" id="team"></ul>
+      </div>
+      <div class="view" role="tabpanel" id="v-conv" aria-labelledby="t-conv" hidden>
+        <ul class="plans">
+          <li>Amil Dental</li><li>Bradesco Dental</li><li>SulAmérica Odonto</li><li>OdontoPrev</li><li>Particular</li>
+        </ul>
+        <a class="link" data-wa="Olá! Vocês atendem o meu convênio? Ele se chama: " href="#">Tem outro convênio? Pergunte no WhatsApp <i class="ph ph-arrow-right"></i></a>
+      </div>
+      <div class="view" role="tabpanel" id="v-end" aria-labelledby="t-end" hidden>
+        <div class="info">
+          <div><i class="ph ph-map-pin"></i><p><b>Rua Fernandes Tourinho, 470, sala 1102</b><span>Savassi, Belo Horizonte</span></p></div>
+          <div><i class="ph ph-clock"></i><p><b>Segunda a sexta, das 8h às 20h</b><span>Sábado, das 8h às 12h</span></p></div>
+          <div><i class="ph ph-car"></i><p><b>Estacionamento conveniado</b><span>No próprio prédio, com a primeira hora por nossa conta</span></p></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="foot">Clínica, profissionais, endereço e avaliações fictícios para demonstração. Responsável técnica: Dra. Marina Vieira, CRO-MG 00000.</p>
+  </section>
+</main>
+
+<script>
+  /* Troque pelo número da clínica, com DDI e DDD, só números. */
+  const WHATSAPP = "5500000000000";
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const IMG = (id, q) => `https://images.unsplash.com/photo-${id}?${q}&q=75`;
+  const wa = text => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
+
+  /* ---------- Tratamentos: cada um abre o WhatsApp com a mensagem pronta ---------- */
+  const TREATMENTS = [
+    { name: "Implantes", info: "3 a 4 consultas", img: "1553514029-1318c9127859" },
+    { name: "Aparelho e alinhadores", info: "revisão todo mês", img: "1580489944761-15a19d654956" },
+    { name: "Clareamento", info: "2 consultas", img: "1594756154841-ac5d160dbf46" },
+    { name: "Lentes e facetas", info: "3 consultas", img: "1605951654320-a55377b36744" },
+    { name: "Odontopediatria", info: "a partir de 1 ano", img: "1708687045000-9dbb586ad1e2", crop: "crop=focalpoint&fp-x=.45&fp-y=.4" },
+    { name: "Limpeza e check-up", info: "cerca de 1 hora", img: "1578933301026-3e5e901126dc" },
+  ];
+  $("#treats").innerHTML = TREATMENTS.map(t => `
+    <li><a class="treat" data-wa="Olá! Vim pelo site e quero marcar uma avaliação de ${t.name.toLowerCase()}." href="#">
+      <img src="${IMG(t.img, `w=120&h=120&fit=crop&${t.crop || "crop=faces"}`)}" alt="" loading="lazy">
+      <span><b>${t.name}</b><span>${t.info}</span></span>
+      <i class="ph ph-whatsapp-logo"></i>
+    </a></li>`).join("");
+
+  /* ---------- Equipe ---------- */
+  const TEAM = [
+    { name: "Dra. Marina Vieira", area: "Implantes, fundadora", img: "1644335326474-544fbcf8855f" },
+    { name: "Dra. Júlia Prado", area: "Clareamento e lentes", img: "1662837775286-7e6258c7c595" },
+    { name: "Dr. Caio Rezende", area: "Aparelho e alinhadores", img: "1667133295308-9ef24f71952e" },
+    { name: "Dr. Rafael Teles", area: "Odontopediatria", img: "1708687045000-9dbb586ad1e2", crop: "crop=focalpoint&fp-x=.8&fp-y=.3&fp-z=2" },
+  ];
+  $("#team").innerHTML = TEAM.map(p => `
+    <li class="doc"><img src="${IMG(p.img, `w=120&h=120&fit=crop&${p.crop || "crop=faces"}`)}" alt="${p.name}" loading="lazy"><p><b>${p.name}</b><span>${p.area}</span></p></li>`).join("");
+
+  /* ---------- Links do WhatsApp ---------- */
+  $$("[data-wa]").forEach(a => { a.href = wa(a.dataset.wa); a.target = "_blank"; a.rel = "noopener"; });
+
+  /* ---------- Abas ---------- */
+  const tabs = $$(".tab");
+  function select(tab) {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute("aria-selected", on);
+      t.tabIndex = on ? 0 : -1;
+      $("#" + t.getAttribute("aria-controls")).hidden = !on;
+    });
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => select(t));
+    t.addEventListener("keydown", e => {
+      const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!k) return;
+      const next = tabs[(i + k + tabs.length) % tabs.length]; select(next); next.focus();
+    });
+  });
+  select(tabs[0]);
+
+  /* ---------- Aberto ou fechado agora (horário de Brasília) ---------- */
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+  const d = now.getDay(), h = now.getHours() + now.getMinutes() / 60;
+  const isOpen = (d >= 1 && d <= 5 && h >= 8 && h < 20) || (d === 6 && h >= 8 && h < 12);
+  $("#open").textContent = isOpen ? "Aberto agora" : "Fechado agora";
+  $("#open").classList.toggle("closed", !isOpen);
+</script>
+</body>
+</html>
