@@ -25,7 +25,7 @@
     color-scheme: light;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { min-height: 100dvh; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; display: grid; place-items: center; }
+  body { min-height: 100dvh; background: transparent; color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; display: grid; place-items: center; }
   a { color: inherit; text-decoration: none; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 
@@ -33,10 +33,22 @@
   .mark { font-size: 12px; letter-spacing: .32em; text-transform: uppercase; font-weight: 600; }
   .mark span { display: block; margin-top: 6px; font-size: 11px; letter-spacing: .2em; color: var(--muted); font-weight: 500; }
 
-  .arch { margin-top: clamp(20px, 3.5vh, 36px); width: clamp(210px, 32vh, 300px); aspect-ratio: 3 / 4; border-radius: 999px 999px 6px 6px; overflow: hidden; background: #fff; box-shadow: 0 30px 60px -30px rgb(22 24 29 / .35); }
-  .arch img { width: 100%; height: 100%; object-fit: cover; object-position: 84% 30%; filter: saturate(.86) contrast(.93) brightness(.985) sepia(.07); }
 
-  h1 { margin-top: clamp(22px, 3.5vh, 34px); font-family: var(--serif); font-weight: 500; font-size: clamp(34px, 4.6vh, 48px); line-height: 1.08; letter-spacing: -.01em; max-width: 15ch; }
+  /* Foto de fundo: a modelo fica à direita, apagando suavemente para a esquerda, com um movimento lento */
+  .backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); pointer-events: none; }
+  .backdrop img { position: absolute; top: 0; right: 0; width: min(68%, 1100px); height: 100%; object-fit: cover; object-position: 72% 28%;
+    filter: saturate(.82) contrast(.92) brightness(1.02) sepia(.08); opacity: .9;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 42%); mask-image: linear-gradient(90deg, transparent 0%, #000 42%); }
+  @media (prefers-reduced-motion: no-preference) {
+    .backdrop img { animation: drift 24s ease-in-out infinite alternate; }
+    @keyframes drift { from { transform: scale(1.02) translateX(0); } to { transform: scale(1.08) translateX(-1.5%); } }
+  }
+  @media (max-width: 900px) {
+    .backdrop img { width: 100%; height: 56%; object-position: 76% 26%;
+      -webkit-mask-image: linear-gradient(180deg, #000 50%, transparent 100%); mask-image: linear-gradient(180deg, #000 50%, transparent 100%); }
+  }
+
+  h1 { margin-top: clamp(18px, 3vh, 30px); font-family: var(--serif); font-weight: 500; font-size: clamp(34px, 4.6vh, 48px); line-height: 1.08; letter-spacing: -.01em; max-width: 15ch; }
   h1 em { font-style: italic; }
 
   .treats { margin-top: clamp(16px, 2.6vh, 24px); display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 0; max-width: 470px; font-size: 15px; color: var(--ink-2); }
@@ -51,16 +63,15 @@
   .contact a:hover { border-color: var(--ink); }
   .foot { margin-top: clamp(18px, 3vh, 28px); font-size: 11px; color: var(--muted); max-width: 46ch; }
 
-  /* Tela larga: arco à esquerda, texto à direita */
-  @media (min-width: 1000px) {
-    main { max-width: 1080px; grid-template-columns: auto 1fr; grid-template-areas: "arch mark" "arch h1" "arch treats" "arch cta" "arch contact" "arch foot"; column-gap: 80px; justify-items: start; align-content: center; text-align: left; }
-    .mark { grid-area: mark; align-self: end; }
-    .arch { grid-area: arch; width: clamp(300px, 30vw, 400px); margin-top: 0; align-self: center; }
-    h1 { grid-area: h1; font-size: clamp(44px, 4.4vw, 64px); max-width: 13ch; }
-    .treats { grid-area: treats; justify-content: flex-start; max-width: 520px; }
-    .cta { grid-area: cta; }
-    .contact { grid-area: contact; }
-    .foot { grid-area: foot; }
+  /* Tela larga: texto à esquerda, a modelo aparece ao fundo à direita */
+  @media (min-width: 901px) {
+    main { max-width: 1180px; padding: 48px 56px; justify-items: start; text-align: left; }
+    h1 { font-size: clamp(46px, 4.6vw, 72px); max-width: 12ch; }
+    .treats { justify-content: flex-start; max-width: 460px; }
+  }
+  /* Celular: espaço no topo para o rosto aparecer antes do texto */
+  @media (max-width: 900px) {
+    main { padding-top: 40vh; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .in { opacity: 0; transform: translateY(12px); animation: rise 1s var(--ease) forwards; animation-delay: calc(var(--d, 0) * 110ms + 120ms); }
@@ -69,9 +80,9 @@
 </style>
 </head>
 <body>
+<div class="backdrop" aria-hidden="true"><img src="images/capa.webp" alt=""></div>
 <main>
   <p class="mark in">Clínica Vieira<span>Odontologia · Savassi</span></p>
-  <div class="arch in" style="--d:1"><img src="images/capa.webp" alt="Mulher loira de olhos azuis sorrindo"></div>
   <h1 class="in" style="--d:2">O sorriso que a <em>família inteira</em> confia.</h1>
   <nav class="treats in" style="--d:3" aria-label="Tratamentos">
     <a data-wa="implantes" href="#">Implantes</a><a data-wa="aparelho" href="#">Aparelho</a><a data-wa="clareamento" href="#">Clareamento</a><a data-wa="lentes e facetas" href="#">Lentes</a><a data-wa="odontopediatria" href="#">Crianças</a><a data-wa="limpeza e check-up" href="#">Limpeza</a>
