@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clínica Vieira | Odontologia na Savassi</title>
+<meta name="description" content="Clínica odontológica de família na Savassi, em Belo Horizonte. Agende pelo WhatsApp.">
+<meta name="theme-color" content="#f5f5f3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/capa.webp">
+<style>
+  /* Capa de revista: a foto ocupa a tela e o texto fica por cima, como nas capas de beleza. */
+  :root {
+    --bg: #f5f5f3;
+    --ink: #16181d;
+    --ink-2: #3b3f47;
+    --muted: #6b7079;
+    --accent: #2443d0;
+    --font: "Archivo", system-ui, sans-serif;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    color-scheme: light;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+  .cover { position: relative; min-height: 100dvh; overflow: hidden; background: #fff; display: grid; grid-template-rows: auto 1fr auto; padding: 22px 40px 32px; }
+  .cover > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 78% 30%; filter: saturate(.86) contrast(.93) brightness(.985) sepia(.07); z-index: 0; }
+  .cover::before { content: ""; position: absolute; inset: 0; z-index: 0; background: linear-gradient(90deg, rgb(245 245 243 / .92) 0%, rgb(245 245 243 / .55) 32%, rgb(245 245 243 / 0) 52%); }
+  .cover > * { position: relative; z-index: 1; }
+
+  /* Título da revista */
+  .masthead { display: flex; justify-content: space-between; align-items: end; gap: 20px; border-bottom: 1px solid var(--ink); padding-bottom: 10px; }
+  .masthead b { font-stretch: 125%; font-weight: 800; font-size: clamp(44px, 8.4vw, 132px); letter-spacing: -.045em; line-height: .82; }
+  .masthead span { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; text-align: right; line-height: 1.5; padding-bottom: 6px; }
+
+  /* Chamadas da capa: os tratamentos */
+  .lines { align-self: center; list-style: none; display: grid; gap: 14px; max-width: 260px; }
+  .lines a { display: block; font-stretch: 100%; font-weight: 300; font-size: 22px; letter-spacing: -.01em; line-height: 1.15; transition: color .25s, transform .4s var(--ease); }
+  .lines a small { display: block; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .lines a:hover { color: var(--accent); transform: translateX(4px); }
+
+  .bottom { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; }
+  h1 { font-stretch: 112%; font-weight: 800; font-size: clamp(36px, 4.4vw, 66px); letter-spacing: -.035em; line-height: .98; max-width: 11ch; }
+  .go { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; font-size: 17px; font-weight: 600; border-bottom: 2px solid var(--ink); padding-bottom: 3px; transition: color .25s, border-color .25s, gap .4s var(--ease); }
+  .go:hover { color: var(--accent); border-color: var(--accent); gap: 14px; }
+  .issue { text-align: right; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; line-height: 1.8; color: var(--ink-2); }
+  .issue a { border-bottom: 1px solid currentColor; }
+  .foot { position: absolute; left: 40px; bottom: 8px; font-size: 10px; color: var(--muted); z-index: 1; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cover > img { animation: settle 2.4s var(--ease) both; }
+    @keyframes settle { from { transform: scale(1.06); } }
+    .in { opacity: 0; transform: translateY(12px); animation: rise 1s var(--ease) forwards; animation-delay: calc(var(--d, 0) * 110ms + 200ms); }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+  }
+
+  @media (max-width: 800px) {
+    .cover { padding: 16px 16px 28px; grid-template-rows: auto auto 1fr auto; }
+    .cover > img { height: 58%; object-position: 80% 25%; }
+    .cover::before { background: linear-gradient(180deg, rgb(245 245 243 / 0) 30%, var(--bg) 58%); }
+    .masthead span { display: none; }
+    .lines { order: 3; align-self: start; grid-template-columns: 1fr 1fr; gap: 12px 16px; max-width: none; margin-top: 18px; }
+    .lines a { font-size: 17px; }
+    .bottom { order: 2; grid-template-columns: 1fr; margin-top: 46vh; gap: 14px; }
+    .issue { text-align: left; }
+    h1 { font-size: 36px; }
+    .foot { position: static; order: 4; margin-top: 18px; }
+  }
+</style>
+</head>
+<body>
+<main class="cover">
+  <img src="images/capa.webp" alt="Mulher loira de olhos azuis sorrindo">
+  <header class="masthead in">
+    <b>Clínica Vieira</b>
+    <span>Odontologia<br>Savassi, BH</span>
+  </header>
+
+  <ul class="lines">
+    <li class="in" style="--d:1"><a data-wa="implantes" href="#"><small>Para quem perdeu um dente</small>Implantes</a></li>
+    <li class="in" style="--d:2"><a data-wa="aparelho e alinhadores" href="#"><small>Alinhar o sorriso</small>Aparelho e alinhadores</a></li>
+    <li class="in" style="--d:3"><a data-wa="clareamento" href="#"><small>Mais branco</small>Clareamento</a></li>
+    <li class="in" style="--d:4"><a data-wa="lentes e facetas" href="#"><small>Formato e cor</small>Lentes e facetas</a></li>
+    <li class="in" style="--d:5"><a data-wa="odontopediatria" href="#"><small>Desde o primeiro dente</small>Crianças</a></li>
+    <li class="in" style="--d:6"><a data-wa="limpeza e check-up" href="#"><small>Duas vezes por ano</small>Limpeza</a></li>
+  </ul>
+
+  <div class="bottom">
+    <div class="in" style="--d:3">
+      <h1>O sorriso que a família inteira confia.</h1>
+      <a class="go" data-wa="" href="#">Agendar pelo WhatsApp <span aria-hidden="true">→</span></a>
+    </div>
+    <p class="issue in" style="--d:4">4,9 no Google<br>Desde 2006<br><a href="tel:+553130000000">(31) 3000-0000</a></p>
+  </div>
+  <p class="foot">Clínica, profissionais, endereço e avaliações fictícios para demonstração.</p>
+</main>
+<script>
+  /* Troque pelo número da clínica, com DDI e DDD, só números. */
+  const WHATSAPP = "5500000000000";
+  document.querySelectorAll("[data-wa]").forEach(a => {
+    const t = a.dataset.wa;
+    const msg = t ? `Olá! Vim pelo site e quero agendar uma avaliação de ${t}.` : "Olá! Vim pelo site e quero agendar uma avaliação.";
+    a.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`; a.target = "_blank"; a.rel = "noopener";
+  });
+</script>
+</body>
+</html>
