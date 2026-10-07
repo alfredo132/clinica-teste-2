@@ -12,18 +12,17 @@
 <link rel="preload" as="image" href="images/capa.webp">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 <style>
-  /* Site de uma tela: no computador nada rola, a não ser o conteúdo da aba quando passa da altura. */
+  /* Site de uma tela. No computador a página não rola; a foto da esquerda acompanha o tratamento em foco. */
   :root {
     --bg: #f5f5f3;
-    --paper: #ffffff;
     --ink: #16181d;
     --ink-2: #3b3f47;
-    --muted: #6b7079;
-    --line: #e2e2de;
+    --muted: #7a7f88;
+    --line: #dddcd7;
     --accent: #2443d0;
-    --accent-soft: #e8ecfb;
     --font: "Archivo", system-ui, sans-serif;
     --ease: cubic-bezier(.16, 1, .3, 1);
+    --soft: cubic-bezier(.4, 0, .2, 1);
     color-scheme: light;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,149 +31,158 @@
   img { display: block; max-width: 100%; }
   button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
   a { color: inherit; text-decoration: none; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-  h1, h2, h3 { font-stretch: 112%; font-weight: 800; letter-spacing: -.035em; line-height: 1; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+  .display { font-stretch: 112%; font-weight: 800; letter-spacing: -.035em; line-height: 1; }
 
   .app { min-height: 100dvh; display: grid; grid-template-columns: 1fr 1fr; }
 
-  /* ---------- Foto ---------- */
+  /* ---------- Foto: capa e fotos dos tratamentos empilhadas, trocando com fade ---------- */
   .photo { position: relative; overflow: hidden; background: #fff; }
   .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 80% 30%;
-    filter: saturate(.86) contrast(.93) brightness(.985) sepia(.07); }
+    filter: saturate(.86) contrast(.93) brightness(.985) sepia(.07);
+    opacity: 0; transform: scale(1.04); transition: opacity 1s var(--soft), transform 2.4s var(--ease); }
+  .photo img.is-on { opacity: 1; transform: scale(1); }
   .photo::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .14; mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
   /* ---------- Painel ---------- */
-  .panel { height: 100dvh; display: flex; flex-direction: column; padding: 32px 48px 28px; gap: 22px; }
-  .brand { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-  .brand b { display: block; font-stretch: 112%; font-weight: 800; font-size: 22px; letter-spacing: -.03em; line-height: 1; }
-  .brand span { font-size: 13px; color: var(--muted); }
-  .open { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink-2); padding: 6px 12px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); white-space: nowrap; }
-  .open::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: #1f9d55; }
-  .open.closed::before { background: #b42318; }
+  .panel { height: 100dvh; display: flex; flex-direction: column; padding: 36px 56px 28px; }
+  .brand { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .brand b { font-size: 21px; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+  .status::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: #1f9d55; box-shadow: 0 0 0 4px rgb(31 157 85 / .14); }
+  .status.closed::before { background: #b42318; box-shadow: 0 0 0 4px rgb(180 35 24 / .12); }
 
-  .intro h1 { font-size: clamp(34px, 3.4vw, 52px); max-width: 14ch; }
-  .rating { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 14px; color: var(--ink-2); }
-  .rating b { font-size: 18px; color: var(--ink); }
-  .rating .stars { color: #f4b400; letter-spacing: 1px; }
+  .intro { margin-top: auto; padding-top: 32px; }
+  .intro h1 { font-size: clamp(40px, 4.2vw, 64px); max-width: 12ch; }
+  .rating { margin-top: 16px; font-size: 14px; color: var(--ink-2); }
+  .rating b { color: var(--ink); font-weight: 700; }
+  .rating .stars { color: #e8a317; letter-spacing: 1px; margin: 0 6px; }
 
-  .actions { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 8px; }
-  .act { height: 56px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 14px; font-weight: 600; font-size: 15px; background: var(--paper); border: 1px solid var(--line); transition: transform .15s var(--ease), border-color .2s, background-color .2s; white-space: nowrap; }
-  .act i { font-size: 20px; }
-  .act:hover { border-color: var(--ink); }
-  .act:active { transform: scale(.97); }
-  .act.main { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .act.main:hover { background: #1b36b3; }
+  .actions { display: flex; align-items: center; gap: 28px; margin-top: 28px; flex-wrap: wrap; }
+  .cta { display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 10px 0 26px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 600; font-size: 16px; transition: background-color .25s, transform .2s var(--ease); }
+  .cta .arrow { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 999px; background: rgb(255 255 255 / .16); transition: transform .4s var(--ease), background-color .25s; }
+  .cta:hover { background: #1b36b3; }
+  .cta:hover .arrow { transform: translateX(3px); background: rgb(255 255 255 / .24); }
+  .cta:active { transform: scale(.98); }
+  .quiet { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--ink-2); padding-bottom: 2px; border-bottom: 1px solid transparent; transition: border-color .25s, color .25s; }
+  .quiet i { font-size: 18px; }
+  .quiet:hover { color: var(--ink); border-color: var(--ink); }
 
-  /* ---------- Abas ---------- */
-  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); padding: 4px; gap: 4px; border-radius: 14px; background: #ebebe7; }
-  .tab { height: 40px; border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--ink-2); transition: background-color .2s, color .2s; }
-  .tab[aria-selected="true"] { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgb(0 0 0 / .08); }
-  .views { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -8px; padding: 0 8px; }
+  /* ---------- Abas com traço deslizante ---------- */
+  .tabs { position: relative; display: flex; gap: 28px; margin-top: 40px; border-bottom: 1px solid var(--line); }
+  .tab { padding: 0 0 12px; font-size: 15px; font-weight: 500; color: var(--muted); transition: color .25s; }
+  .tab:hover, .tab[aria-selected="true"] { color: var(--ink); }
+  .tab-line { position: absolute; bottom: -1px; left: 0; height: 2px; background: var(--ink); transition: transform .5s var(--ease), width .5s var(--ease); }
+  .views { position: relative; flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+  .views::-webkit-scrollbar { display: none; }
   .view[hidden] { display: none; }
-  .view { animation: show .35s var(--ease); }
-  @keyframes show { from { opacity: 0; transform: translateY(6px); } }
+  .view { animation: show .5s var(--ease); }
+  @keyframes show { from { opacity: 0; transform: translateY(8px); } }
 
-  /* Tratamentos */
-  .treats { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .treat { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 14px; background: var(--paper); border: 1px solid var(--line); text-align: left; transition: border-color .2s; }
-  .treat:hover { border-color: var(--ink); }
-  .treat img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; flex: none; background: var(--line); }
-  .treat b { display: block; font-size: 15px; font-weight: 700; line-height: 1.25; }
-  .treat span { font-size: 13px; color: var(--muted); }
-  .treat i { margin-left: auto; color: var(--accent); font-size: 18px; }
-  .hint { margin-top: 12px; font-size: 13px; color: var(--muted); }
+  /* Linhas: mesmo desenho para tratamentos, equipe, convênios e endereço */
+  .rows { list-style: none; }
+  .row { display: flex; align-items: center; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .rows li:last-child .row { border-bottom: 0; }
+  a.row { transition: padding .45s var(--ease); }
+  .row .name { font-stretch: 108%; font-weight: 700; font-size: 19px; letter-spacing: -.02em; transition: color .25s; }
+  .row .meta { margin-left: auto; font-size: 13px; color: var(--muted); text-align: right; white-space: nowrap; }
+  .row .go { width: 18px; font-size: 16px; color: var(--accent); opacity: 0; transform: translateX(-6px); transition: opacity .3s, transform .45s var(--ease); }
+  a.row:hover, a.row:focus-visible { padding-left: 8px; }
+  a.row:hover .name, a.row:focus-visible .name { color: var(--accent); }
+  a.row:hover .go, a.row:focus-visible .go { opacity: 1; transform: none; }
+  .row img { width: 40px; height: 40px; border-radius: 999px; object-fit: cover; flex: none; background: var(--line); }
+  .row .sub { display: block; font-size: 13px; color: var(--muted); font-weight: 400; letter-spacing: 0; font-stretch: 100%; }
+  .plans { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+  .plans li:nth-last-child(2) .row { border-bottom: 0; }
+  .ask { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  .ask i { transition: transform .35s var(--ease); }
+  .ask:hover i { transform: translateX(3px); }
 
-  /* Equipe */
-  .team { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .doc { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 14px; background: var(--paper); border: 1px solid var(--line); }
-  .doc img { width: 56px; height: 56px; border-radius: 999px; object-fit: cover; flex: none; background: var(--line); }
-  .doc b { display: block; font-size: 15px; font-weight: 700; line-height: 1.25; }
-  .doc span { font-size: 13px; color: var(--muted); }
+  .foot { margin-top: 20px; font-size: 11px; color: var(--muted); }
 
-  /* Convênios */
-  .plans { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
-  .plans li { padding: 12px 16px; border-radius: 12px; background: var(--paper); border: 1px solid var(--line); font-weight: 600; font-size: 15px; }
-  .link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-weight: 600; font-size: 14px; color: var(--accent); }
-
-  /* Endereço */
-  .info { display: grid; gap: 8px; }
-  .info div { display: flex; gap: 12px; padding: 14px; border-radius: 14px; background: var(--paper); border: 1px solid var(--line); }
-  .info i { font-size: 22px; color: var(--accent); flex: none; }
-  .info b { display: block; font-size: 15px; font-weight: 700; }
-  .info span { font-size: 14px; color: var(--muted); }
-
-  .foot { font-size: 12px; color: var(--muted); }
+  /* ---------- Entrada suave ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .in { opacity: 0; transform: translateY(14px); animation: rise .9s var(--ease) forwards; animation-delay: calc(var(--d, 0) * 90ms + 150ms); }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .view { animation: none; }
+    .photo img, .tab-line { transition: none; }
+  }
 
   /* ---------- Celular ---------- */
   @media (max-width: 900px) {
     .app { grid-template-columns: 1fr; }
-    .photo { height: 42vh; min-height: 260px; }
+    .photo { height: 44vh; min-height: 280px; }
     .photo img { object-position: 82% 28%; }
-    .photo::before { content: ""; position: absolute; inset: auto 0 0; height: 40%; z-index: 1; background: linear-gradient(180deg, rgb(245 245 243 / 0), var(--bg)); }
-    .panel { height: auto; padding: 0 16px calc(24px + env(safe-area-inset-bottom)); margin-top: -28px; position: relative; z-index: 2; gap: 18px; }
-    .views { overflow: visible; margin: 0; padding: 0; }
-    .intro h1 { font-size: 34px; }
-    .actions { grid-template-columns: 1fr 1fr; }
-    .act.main { grid-column: 1 / -1; height: 58px; font-size: 16px; }
-    .treats, .team { grid-template-columns: 1fr; }
-    .tab { font-size: 13px; }
+    .photo::before { content: ""; position: absolute; inset: auto 0 0; height: 45%; z-index: 1; background: linear-gradient(180deg, rgb(245 245 243 / 0), var(--bg)); }
+    .panel { height: auto; padding: 0 20px calc(28px + env(safe-area-inset-bottom)); margin-top: -40px; position: relative; z-index: 2; }
+    .intro { margin-top: 18px; padding-top: 0; }
+    .intro h1 { font-size: 38px; }
+    .actions { gap: 20px; margin-top: 22px; }
+    .cta { width: 100%; justify-content: space-between; height: 58px; }
+    .tabs { margin-top: 32px; gap: 18px; overflow-x: auto; scrollbar-width: none; }
+    .tab { font-size: 14px; }
+    .tab { white-space: nowrap; }
+    .views { overflow: visible; }
+    .row .name { font-size: 18px; }
+    .row .go { opacity: 1; transform: none; }
+    .plans { grid-template-columns: 1fr; }
+    .plans li:nth-last-child(2) .row { border-bottom: 1px solid var(--line); }
   }
-  @media (prefers-reduced-motion: reduce) { .view { animation: none; } }
 </style>
 </head>
 <body>
 <main class="app">
-  <div class="photo"><img src="images/capa.webp" alt="Mulher loira de olhos azuis sorrindo, com dentes brancos" fetchpriority="high"></div>
+  <div class="photo" id="photo" aria-hidden="true"></div>
 
   <section class="panel">
-    <header class="brand">
-      <div><b>Clínica Vieira</b><span>Odontologia na Savassi</span></div>
-      <span class="open" id="open"></span>
+    <header class="brand in">
+      <b class="display">Clínica Vieira</b>
+      <span class="status" id="status"></span>
     </header>
 
     <div class="intro">
-      <h1>Seu dentista de família em BH.</h1>
-      <p class="rating"><b>4,9</b><span class="stars" aria-hidden="true">★★★★★</span><span>712 avaliações no Google</span></p>
+      <h1 class="display in" style="--d:1">Seu dentista de família em BH.</h1>
+      <p class="rating in" style="--d:2"><b>4,9</b><span class="stars" aria-hidden="true">★★★★★</span>712 avaliações no Google</p>
+      <div class="actions in" style="--d:3">
+        <a class="cta" data-wa="Olá! Vim pelo site e quero marcar uma avaliação." href="#">Marcar avaliação<span class="arrow"><i class="ph-bold ph-arrow-right"></i></span></a>
+        <a class="quiet" href="tel:+553130000000"><i class="ph ph-phone"></i>Ligar</a>
+        <a class="quiet" href="https://maps.google.com/?q=Rua+Fernandes+Tourinho+470+Savassi+Belo+Horizonte" target="_blank" rel="noopener"><i class="ph ph-map-pin"></i>Como chegar</a>
+      </div>
     </div>
 
-    <nav class="actions" aria-label="Contato">
-      <a class="act main" data-wa="Olá! Vim pelo site e quero marcar uma avaliação." href="#"><i class="ph-bold ph-whatsapp-logo"></i>Marcar pelo WhatsApp</a>
-      <a class="act" href="tel:+553130000000"><i class="ph ph-phone"></i>Ligar</a>
-      <a class="act" href="https://maps.google.com/?q=Rua+Fernandes+Tourinho+470+Savassi+Belo+Horizonte" target="_blank" rel="noopener"><i class="ph ph-map-pin"></i>Mapa</a>
-    </nav>
-
-    <div class="tabs" role="tablist" aria-label="Informações da clínica">
+    <div class="tabs in" style="--d:4" role="tablist" aria-label="Informações da clínica">
       <button class="tab" role="tab" id="t-trat" aria-controls="v-trat" aria-selected="true">Tratamentos</button>
       <button class="tab" role="tab" id="t-equipe" aria-controls="v-equipe" aria-selected="false">Equipe</button>
       <button class="tab" role="tab" id="t-conv" aria-controls="v-conv" aria-selected="false">Convênios</button>
       <button class="tab" role="tab" id="t-end" aria-controls="v-end" aria-selected="false">Endereço</button>
+      <span class="tab-line" id="tab-line"></span>
     </div>
 
-    <div class="views">
-      <div class="view" role="tabpanel" id="v-trat" aria-labelledby="t-trat">
-        <ul class="treats" id="treats"></ul>
-        <p class="hint">Toque no tratamento e a mensagem já sai pronta no WhatsApp.</p>
-      </div>
-      <div class="view" role="tabpanel" id="v-equipe" aria-labelledby="t-equipe" hidden>
-        <ul class="team" id="team"></ul>
-      </div>
+    <div class="views in" style="--d:5">
+      <div class="view" role="tabpanel" id="v-trat" aria-labelledby="t-trat"><ul class="rows" id="treats"></ul></div>
+      <div class="view" role="tabpanel" id="v-equipe" aria-labelledby="t-equipe" hidden><ul class="rows" id="team"></ul></div>
       <div class="view" role="tabpanel" id="v-conv" aria-labelledby="t-conv" hidden>
-        <ul class="plans">
-          <li>Amil Dental</li><li>Bradesco Dental</li><li>SulAmérica Odonto</li><li>OdontoPrev</li><li>Particular</li>
+        <ul class="rows plans">
+          <li><span class="row"><span class="name">Amil Dental</span></span></li>
+          <li><span class="row"><span class="name">Bradesco Dental</span></span></li>
+          <li><span class="row"><span class="name">SulAmérica Odonto</span></span></li>
+          <li><span class="row"><span class="name">OdontoPrev</span></span></li>
         </ul>
-        <a class="link" data-wa="Olá! Vocês atendem o meu convênio? Ele se chama: " href="#">Tem outro convênio? Pergunte no WhatsApp <i class="ph ph-arrow-right"></i></a>
+        <a class="ask" data-wa="Olá! Vocês atendem o meu convênio? Ele se chama: " href="#">Tem outro convênio? Pergunte no WhatsApp <i class="ph ph-arrow-right"></i></a>
       </div>
       <div class="view" role="tabpanel" id="v-end" aria-labelledby="t-end" hidden>
-        <div class="info">
-          <div><i class="ph ph-map-pin"></i><p><b>Rua Fernandes Tourinho, 470, sala 1102</b><span>Savassi, Belo Horizonte</span></p></div>
-          <div><i class="ph ph-clock"></i><p><b>Segunda a sexta, das 8h às 20h</b><span>Sábado, das 8h às 12h</span></p></div>
-          <div><i class="ph ph-car"></i><p><b>Estacionamento conveniado</b><span>No próprio prédio, com a primeira hora por nossa conta</span></p></div>
-        </div>
+        <ul class="rows">
+          <li><span class="row"><span class="name">Rua Fernandes Tourinho, 470<span class="sub">Sala 1102, Savassi, Belo Horizonte</span></span></span></li>
+          <li><span class="row"><span class="name">Segunda a sexta, 8h às 20h<span class="sub">Sábado, 8h às 12h</span></span></span></li>
+          <li><span class="row"><span class="name">Estacionamento no prédio<span class="sub">A primeira hora é por nossa conta</span></span></span></li>
+        </ul>
       </div>
     </div>
 
-    <p class="foot">Clínica, profissionais, endereço e avaliações fictícios para demonstração. Responsável técnica: Dra. Marina Vieira, CRO-MG 00000.</p>
+    <p class="foot in" style="--d:6">Clínica, profissionais, endereço e avaliações fictícios para demonstração. Responsável técnica: Dra. Marina Vieira, CRO-MG 00000.</p>
   </section>
 </main>
 
@@ -183,23 +191,22 @@
   const WHATSAPP = "5500000000000";
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
-  const IMG = (id, q) => `https://images.unsplash.com/photo-${id}?${q}&q=75`;
+  const IMG = (id, q) => `https://images.unsplash.com/photo-${id}?${q}&q=80`;
   const wa = text => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
+  const DESKTOP = matchMedia("(min-width: 901px) and (hover: hover)");
 
-  /* ---------- Tratamentos: cada um abre o WhatsApp com a mensagem pronta ---------- */
+  /* ---------- Tratamentos ---------- */
   const TREATMENTS = [
-    { name: "Implantes", info: "3 a 4 consultas", img: "1553514029-1318c9127859" },
-    { name: "Aparelho e alinhadores", info: "revisão todo mês", img: "1580489944761-15a19d654956" },
-    { name: "Clareamento", info: "2 consultas", img: "1594756154841-ac5d160dbf46" },
-    { name: "Lentes e facetas", info: "3 consultas", img: "1605951654320-a55377b36744" },
-    { name: "Odontopediatria", info: "a partir de 1 ano", img: "1708687045000-9dbb586ad1e2", crop: "crop=focalpoint&fp-x=.45&fp-y=.4" },
-    { name: "Limpeza e check-up", info: "cerca de 1 hora", img: "1578933301026-3e5e901126dc" },
+    { name: "Implantes", meta: "3 a 4 consultas", img: "1553514029-1318c9127859" },
+    { name: "Aparelho e alinhadores", meta: "revisão todo mês", img: "1580489944761-15a19d654956" },
+    { name: "Clareamento", meta: "2 consultas", img: "1594756154841-ac5d160dbf46" },
+    { name: "Lentes e facetas", meta: "3 consultas", img: "1605951654320-a55377b36744" },
+    { name: "Odontopediatria", meta: "a partir de 1 ano", img: "1708687045000-9dbb586ad1e2" },
+    { name: "Limpeza e check-up", meta: "cerca de 1 hora", img: "1578933301026-3e5e901126dc" },
   ];
-  $("#treats").innerHTML = TREATMENTS.map(t => `
-    <li><a class="treat" data-wa="Olá! Vim pelo site e quero marcar uma avaliação de ${t.name.toLowerCase()}." href="#">
-      <img src="${IMG(t.img, `w=120&h=120&fit=crop&${t.crop || "crop=faces"}`)}" alt="" loading="lazy">
-      <span><b>${t.name}</b><span>${t.info}</span></span>
-      <i class="ph ph-whatsapp-logo"></i>
+  $("#treats").innerHTML = TREATMENTS.map((t, i) => `
+    <li><a class="row" data-photo="${i + 1}" data-wa="Olá! Vim pelo site e quero marcar uma avaliação de ${t.name.toLowerCase()}." href="#">
+      <span class="name">${t.name}</span><span class="meta">${t.meta}</span><i class="ph-bold ph-arrow-right go"></i>
     </a></li>`).join("");
 
   /* ---------- Equipe ---------- */
@@ -210,13 +217,35 @@
     { name: "Dr. Rafael Teles", area: "Odontopediatria", img: "1708687045000-9dbb586ad1e2", crop: "crop=focalpoint&fp-x=.8&fp-y=.3&fp-z=2" },
   ];
   $("#team").innerHTML = TEAM.map(p => `
-    <li class="doc"><img src="${IMG(p.img, `w=120&h=120&fit=crop&${p.crop || "crop=faces"}`)}" alt="${p.name}" loading="lazy"><p><b>${p.name}</b><span>${p.area}</span></p></li>`).join("");
+    <li><span class="row"><img src="${IMG(p.img, `w=96&h=96&fit=crop&${p.crop || "crop=faces"}`)}" alt="${p.name}" loading="lazy">
+      <span class="name">${p.name}<span class="sub">${p.area}</span></span></span></li>`).join("");
+
+  /* ---------- Foto: capa + uma foto por tratamento, trocando com fade ---------- */
+  const PHOTOS = [{ src: "images/capa.webp", pos: "80% 30%" }, ...TREATMENTS.map(t => ({ src: IMG(t.img, "w=1400&h=1600&fit=crop&crop=faces"), pos: "50% 35%" }))];
+  $("#photo").innerHTML = PHOTOS.map((p, i) => i
+    ? `<img data-src="${p.src}" alt="" style="object-position:${p.pos}">`
+    : `<img src="${p.src}" data-src="${p.src}" alt="" style="object-position:${p.pos}" class="is-on" fetchpriority="high">`).join("");
+  const photos = $$("#photo img");
+  const showPhoto = i => photos.forEach((img, k) => {
+    if (k === i && !img.getAttribute("src")) img.src = img.dataset.src;
+    img.classList.toggle("is-on", k === i);
+  });
+  if (DESKTOP.matches) {
+    // Carrega as fotos dos tratamentos depois da capa, para a troca sair instantânea
+    addEventListener("load", () => photos.forEach(img => { if (!img.getAttribute("src")) img.src = img.dataset.src; }));
+    $$("#treats .row").forEach(r => {
+      r.addEventListener("mouseenter", () => showPhoto(+r.dataset.photo));
+      r.addEventListener("focus", () => showPhoto(+r.dataset.photo));
+    });
+    $("#treats").addEventListener("mouseleave", () => showPhoto(0));
+  }
 
   /* ---------- Links do WhatsApp ---------- */
   $$("[data-wa]").forEach(a => { a.href = wa(a.dataset.wa); a.target = "_blank"; a.rel = "noopener"; });
 
   /* ---------- Abas ---------- */
-  const tabs = $$(".tab");
+  const tabs = $$(".tab"), line = $("#tab-line");
+  function moveLine(tab) { line.style.width = tab.offsetWidth + "px"; line.style.transform = `translateX(${tab.offsetLeft}px)`; }
   function select(tab) {
     tabs.forEach(t => {
       const on = t === tab;
@@ -224,6 +253,8 @@
       t.tabIndex = on ? 0 : -1;
       $("#" + t.getAttribute("aria-controls")).hidden = !on;
     });
+    moveLine(tab);
+    showPhoto(0);
   }
   tabs.forEach((t, i) => {
     t.addEventListener("click", () => select(t));
@@ -233,13 +264,15 @@
     });
   });
   select(tabs[0]);
+  addEventListener("resize", () => moveLine($('.tab[aria-selected="true"]')));
+  document.fonts && document.fonts.ready.then(() => moveLine($('.tab[aria-selected="true"]')));
 
   /* ---------- Aberto ou fechado agora (horário de Brasília) ---------- */
   const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
   const d = now.getDay(), h = now.getHours() + now.getMinutes() / 60;
   const isOpen = (d >= 1 && d <= 5 && h >= 8 && h < 20) || (d === 6 && h >= 8 && h < 12);
-  $("#open").textContent = isOpen ? "Aberto agora" : "Fechado agora";
-  $("#open").classList.toggle("closed", !isOpen);
+  $("#status").textContent = isOpen ? "Aberto agora" : "Fechado agora";
+  $("#status").classList.toggle("closed", !isOpen);
 </script>
 </body>
 </html>
